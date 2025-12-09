@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-inter text-gray-900 bg-lavender;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair;
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer utilities {
+  .transition-smooth {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, #9C1B74 0%, #D450A5 100%);
+  }
+
+  .gradient-primary-hover {
+    background: linear-gradient(135deg, #6C0F52 0%, #9C1B74 100%);
+  }
+}
