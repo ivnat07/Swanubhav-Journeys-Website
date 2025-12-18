@@ -4,20 +4,36 @@ import { useState, FormEvent } from 'react'
 import Section from '@/components/Section'
 import Card from '@/components/Card'
 import Button from '@/components/Button'
-import { ContactRequest } from '@/types'
 import HeroReveal from '@/components/animations/HeroReveal'
 import FadeIn from '@/components/animations/FadeIn'
 import StaggerContainer from '@/components/animations/StaggerContainer'
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+
+interface ContactResponse {
+  success: boolean
+  message?: string
+  error?: string
+}
+
+type FormData = {
+  name: string
+  email: string
+  message: string
+  preferredDestination?: string
+  travelDates?: string
+}
 
 export default function Contact() {
-  const [formData, setFormData] = useState<ContactRequest>({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
-    phone: '',
     message: '',
     preferredDestination: '',
     travelDates: '',
   })
+  const [phone, setPhone] = useState('')
+  const [phoneError, setPhoneError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error' | null
@@ -26,37 +42,61 @@ export default function Contact() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const digits = phone.replace(/\D/g, '')
+    const lastTen = digits.slice(-10)
+
+    if (lastTen.length !== 10) {
+      setPhoneError('Phone number must contain a valid 10-digit number')
+      setSubmitStatus({ type: 'error', message: 'Please correct the phone number.' })
+      return
+    }
+
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: '' })
 
     try {
+      const combinedPhone = `+${digits}`
+      const payload = {
+        ...formData,
+        phone: combinedPhone,
+      }
+
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       })
 
-      const data = await response.json()
+      const data: ContactResponse = await response.json()
 
       if (data.success) {
-        setSubmitStatus({ type: 'success', message: data.message })
+        setSubmitStatus({ 
+          type: 'success', 
+          message: data.message || 'We received your inquiry! Our team will get back to you soon.' 
+        })
+        // Clear form on success
         setFormData({
           name: '',
           email: '',
-          phone: '',
           message: '',
           preferredDestination: '',
           travelDates: '',
         })
+        setPhone('')
+        setPhoneError('')
       } else {
-        setSubmitStatus({ type: 'error', message: data.message })
+        setSubmitStatus({ 
+          type: 'error', 
+          message: data.error || data.message || 'An error occurred. Please try again.' 
+        })
       }
     } catch (error) {
+      console.error('Form submission error:', error)
       setSubmitStatus({
         type: 'error',
-        message: 'An error occurred. Please try again later.',
+        message: 'Network error. Please check your connection and try again.',
       })
     } finally {
       setIsSubmitting(false)
@@ -70,6 +110,10 @@ export default function Contact() {
       ...formData,
       [e.target.name]: e.target.value,
     })
+    // Clear status message when user starts typing
+    if (submitStatus.type) {
+      setSubmitStatus({ type: null, message: '' })
+    }
   }
 
   return (
@@ -93,7 +137,7 @@ export default function Contact() {
             <FadeIn delay={0.1}>
               <Card>
                 <h2 className="text-3xl font-playfair font-bold mb-6 text-gray-900">Send us a Message</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                   <div>
                     <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                       Name *
@@ -105,7 +149,8 @@ export default function Contact() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Your full name"
                     />
                   </div>
@@ -121,7 +166,8 @@ export default function Contact() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="your.email@example.com"
                     />
                   </div>
@@ -130,15 +176,46 @@ export default function Contact() {
                     <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
                       Phone
                     </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth"
-                      placeholder="+1 (555) 123-4567"
-                    />
+                    <div className="w-full">
+                      <PhoneInput
+                        country="in"
+                        value={phone}
+                        onChange={(value) => {
+                          setPhone(value)
+                          const digitsOnly = value.replace(/\D/g, '')
+                          const lastTenDigits = digitsOnly.slice(-10)
+                          if (lastTenDigits.length !== 10) {
+                            setPhoneError(digitsOnly ? 'Phone number must contain a valid 10-digit number' : '')
+                          } else {
+                            setPhoneError('')
+                          }
+                          if (submitStatus.type) setSubmitStatus({ type: null, message: '' })
+                        }}
+                        enableSearch
+                        inputProps={{
+                          name: 'phone',
+                          id: 'phone',
+                          required: true,
+                          autoComplete: 'tel',
+                          disabled: isSubmitting,
+                        }}
+                        inputClass="!w-full !h-12 !text-base !bg-lavender !border !border-gray-200 !rounded-lg focus:!ring-2 focus:!ring-primary focus:!border-transparent !transition"
+                        inputStyle={{
+                          width: '100%',
+                          height: '3rem',
+                          borderRadius: '0.75rem',
+                          paddingLeft: '3.2rem',
+                          backgroundColor: '#f5f3ff',
+                          border: '1px solid #e5e7eb',
+                        }}
+                        buttonClass="rounded-l-lg border border-r-0 border-gray-200 !bg-white !h-12"
+                        containerClass="w-full"
+                        dropdownClass="shadow-lg"
+                      />
+                    </div>
+                    {phoneError && (
+                      <p className="mt-2 text-sm text-red-600">{phoneError}</p>
+                    )}
                   </div>
 
                   <div>
@@ -151,7 +228,8 @@ export default function Contact() {
                       name="preferredDestination"
                       value={formData.preferredDestination}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Where would you like to go?"
                     />
                   </div>
@@ -166,7 +244,8 @@ export default function Contact() {
                       name="travelDates"
                       value={formData.travelDates}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="e.g., March 2024 - April 2024"
                     />
                   </div>
@@ -182,20 +261,33 @@ export default function Contact() {
                       rows={5}
                       value={formData.message}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth resize-none"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-lavender border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Tell us about your travel plans..."
                     />
                   </div>
 
-                  {submitStatus.type && (
-                    <div
-                      className={`p-4 rounded-lg ${
-                        submitStatus.type === 'success'
-                          ? 'bg-green-50 text-green-700 border border-green-200'
-                          : 'bg-red-50 text-red-700 border border-red-200'
-                      }`}
-                    >
-                      {submitStatus.message}
+                  {/* Success Message */}
+                  {submitStatus.type === 'success' && (
+                    <div className="p-4 rounded-lg bg-green-50 text-green-700 border border-green-200">
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{submitStatus.message}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Error Message */}
+                  {submitStatus.type === 'error' && (
+                    <div className="p-4 rounded-lg bg-red-50 text-red-700 border border-red-200">
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span>{submitStatus.message}</span>
+                      </div>
                     </div>
                   )}
 

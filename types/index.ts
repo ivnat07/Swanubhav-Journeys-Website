@@ -9,9 +9,14 @@ export interface Service {
 export interface ContactRequest {
   name: string;
   email: string;
-  phone?: string;
+  phone: string;
   message: string;
   preferredDestination?: string;
   travelDates?: string;
 }
 
+export interface ContactResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}
