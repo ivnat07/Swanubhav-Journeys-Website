@@ -1,19 +1,63 @@
+'use client'
+
 import Image from 'next/image'
+import { useState } from 'react'
 import Section from '@/components/Section'
 import Card from '@/components/Card'
 import Button from '@/components/Button'
 import HeroReveal from '@/components/animations/HeroReveal'
 import FadeIn from '@/components/animations/FadeIn'
 import StaggerContainer from '@/components/animations/StaggerContainer'
-import BackgroundSection from '@/components/BackgroundSection'
 import HeroCarousel from '@/components/HeroCarousel'
+import DestinationCard from '../components/DestinationCard'
+import DestinationModal from '../components/DestinationModal'
+import StartJourneyModal from '../components/StartJourneyModal'
 import { destinations } from '@/lib/destinations'
+
+const featuredDestinationsForGrid = [
+  {
+    id: 'kashmir',
+    name: 'Kashmir',
+    description: 'Snow-capped peaks, serene lakes, and breathtaking valleys.',
+    image: '/images/destinations/kashmir.jpg',
+  },
+  {
+    id: 'himachal',
+    name: 'Himachal',
+    description: 'Mountain escapes, winding roads, and charming hill towns.',
+    image: '/images/destinations/himachal.jpg',
+  },
+  {
+    id: 'kerala',
+    name: 'Kerala',
+    description: 'Backwaters, lush greenery, and tranquil houseboat stays.',
+    image: '/images/destinations/kerala.jpg',
+  },
+  {
+    id: 'hampi-badami',
+    name: 'Hampi–Badami',
+    description: 'Ancient ruins, cave temples, and rich heritage landscapes.',
+    image: '/images/destinations/humpi-badami.jpg',
+  },
+  {
+    id: 'dubai',
+    name: 'Dubai',
+    description: 'Futuristic skyline, desert adventures, and luxe shopping.',
+    image: '/images/destinations/dubai.jpg',
+  },
+  {
+    id: 'bali',
+    name: 'Bali',
+    description: 'Beaches, rice terraces, and soulful island culture.',
+    image: '/images/destinations/bali.jpg',
+  },
+] as const
 
 export default function Home() {
   // Get featured destinations for the hero and sections
   const heroDestinations = destinations.slice(0, 4) // Use first 4 for hero carousel
-  const featuredDestinations = destinations.slice(0, 3) // First 3 for cards
-  const backgroundSections = destinations.slice(1, 3) // Kashmir and Paris for background sections
+  const [selectedDestination, setSelectedDestination] = useState<string | null>(null)
+  const [isStartJourneyModalOpen, setIsStartJourneyModalOpen] = useState(false)
 
   return (
     <div>
@@ -28,7 +72,11 @@ export default function Home() {
             Discover extraordinary journeys tailored to your dreams. 
             Where every destination becomes a memory.
           </p>
-          <Button href="/contact" variant="primary" className="text-lg px-10 py-4">
+          <Button
+            onClick={() => setIsStartJourneyModalOpen(true)}
+            variant="primary"
+            className="text-lg px-10 py-4"
+          >
             Start Your Journey
           </Button>
         </HeroReveal>
@@ -36,46 +84,23 @@ export default function Home() {
 
       {/* Featured Destinations */}
       <FadeIn>
-        <Section title="Featured Destinations" subtitle="Discover our handpicked destinations that promise unforgettable experiences">
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredDestinations.map((destination) => (
-              <Card key={destination.id} hover>
-                <div className="h-48 bg-gradient-to-br from-primary-light to-primary rounded-xl mb-4 flex items-center justify-center relative overflow-hidden">
-                  <Image
-                    src={destination.image}
-                    alt={destination.name}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-primary-dark/50 to-primary/30"></div>
-                  <span className="text-white text-2xl font-playfair relative z-10">{destination.name}</span>
-                </div>
-                <h3 className="text-2xl font-playfair font-semibold mb-2">{destination.name}</h3>
-                <p className="text-gray-600">{destination.description}</p>
-              </Card>
+        <Section
+          title="Featured Destinations"
+          subtitle="Discover our handpicked destinations that promise unforgettable experiences"
+        >
+          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredDestinationsForGrid.map((destination) => (
+              <DestinationCard
+                key={destination.id}
+                name={destination.name}
+                description={destination.description}
+                image={destination.image}
+                onClick={() => setSelectedDestination(destination.name)}
+              />
             ))}
           </StaggerContainer>
         </Section>
       </FadeIn>
-
-      {/* Background Sections - Easy to add more! */}
-      {backgroundSections.map((destination, index) => (
-        <FadeIn key={destination.id} delay={0.1 * (index + 1)}>
-          <BackgroundSection 
-            image={destination.image} 
-            minHeight={destination.minHeight || '60vh'}
-          >
-            <div className="text-center text-white">
-              <h2 className="text-4xl md:text-5xl font-playfair font-bold mb-4">
-                Experience {destination.name}
-              </h2>
-              <p className="text-xl text-white/90 max-w-2xl mx-auto">
-                {destination.description}
-              </p>
-            </div>
-          </BackgroundSection>
-        </FadeIn>
-      ))}
 
       {/* Why Choose Us */}
       <FadeIn delay={0.2}>
@@ -180,6 +205,16 @@ export default function Home() {
           </StaggerContainer>
         </Section>
       </FadeIn>
+
+      <DestinationModal
+        destination={selectedDestination}
+        onClose={() => setSelectedDestination(null)}
+      />
+
+      <StartJourneyModal
+        isOpen={isStartJourneyModalOpen}
+        onClose={() => setIsStartJourneyModalOpen(false)}
+      />
     </div>
   )
 }
