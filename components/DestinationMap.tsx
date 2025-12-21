@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useEffect, useRef } from 'react'
 import { GoogleMap, Marker, InfoWindow, useLoadScript } from '@react-google-maps/api'
-import type { google } from '@react-google-maps/api'
+//import type { google } from '@react-google-maps/api'
 
 interface DestinationMapProps {
   destination: string
@@ -22,13 +22,19 @@ const mapOptions = {
 }
 
 export default function DestinationMap({ destination }: DestinationMapProps) {
+    type Place = {
+        name: string
+        lat: number
+        lng: number
+        description: string
+      }
   const [activePlace, setActivePlace] = useState<{
     name: string
     lat: number
     lng: number
     description: string
   } | null>(null)
-  const mapRef = useRef<google.maps.Map | null>(null)
+  const mapRef = useRef<any>(null)
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
@@ -56,7 +62,8 @@ export default function DestinationMap({ destination }: DestinationMapProps) {
     const bounds = new window.google.maps.LatLngBounds()
 
     // Extend bounds to include all places
-    destinationData.places.forEach((place) => {
+    destinationData.places.forEach((place: Place) => {
+
       bounds.extend(new window.google.maps.LatLng(place.lat, place.lng))
     })
 
@@ -69,7 +76,7 @@ export default function DestinationMap({ destination }: DestinationMapProps) {
     })
   }, [destinationData, isLoaded])
 
-  const handleMapLoad = (map: google.maps.Map) => {
+  const handleMapLoad = (map: any) => {
     mapRef.current = map
   }
 
@@ -110,11 +117,18 @@ export default function DestinationMap({ destination }: DestinationMapProps) {
         options={mapOptions}
         onLoad={handleMapLoad}
       >
-        {destinationData.places.map((place) => (
+        {destinationData.places.map((place: { name: string; lat: number; lng: number; description?: string }) => (
           <Marker
             key={place.name}
             position={{ lat: place.lat, lng: place.lng }}
-            onClick={() => setActivePlace(place)}
+            onClick={() =>
+              setActivePlace({
+                name: place.name,
+                lat: place.lat,
+                lng: place.lng,
+                description: place.description ?? "",
+              })
+            }
             title={place.name}
           />
         ))}
