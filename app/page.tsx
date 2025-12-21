@@ -152,28 +152,30 @@ export default function Home() {
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="border-l-4 border-primary" hover={false}>
               <p className="text-gray-700 text-lg mb-4 italic">
-                "Swanubhav crafted the most amazing honeymoon experience for us. Every detail was perfect, and we felt truly cared for throughout our journey."
+                "Excellent planning skills, trustworthy management and perfectly managing the best events, tours and surprisingly with a lower budgets. The uniqueness is innovation!
+Swanubhav Journeys, the perfect name selected as your tour or an event is actually owned by them !
+Strongly recommended for event management as well as tours or holidays, I am sure, you shall not consider any other name next time."
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 gradient-primary rounded-full flex items-center justify-center mr-4">
                   <span className="text-white font-semibold">SM</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900">Sarah & Mike</p>
-                  <p className="text-sm text-gray-600">Honeymoon Package</p>
+                  <p className="font-semibold text-gray-900">Santosh Dhimate</p>
+                  <p className="text-sm text-gray-600">Custom Tour</p>
                 </div>
               </div>
             </Card>
             <Card className="border-l-4 border-primary" hover={false}>
               <p className="text-gray-700 text-lg mb-4 italic">
-                "The group tour exceeded all expectations. Our guide was knowledgeable, the accommodations were excellent, and we made lifelong friends."
-              </p>
+                "We booked Kashmir trip through Swanubhav tours. It was an amazing experience for all of us. Excellent trip managed by the team. Seamless coordination between hotels and transportation arrangements at all destinations. Very professional approach.
               <div className="flex items-center">
                 <div className="w-12 h-12 gradient-primary rounded-full flex items-center justify-center mr-4">
                   <span className="text-white font-semibold">JD</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900">John Davis</p>
+                  <p className="font-semibold text-gray-900">
+                  chaitanya hublika</p>
                   <p className="text-sm text-gray-600">Group Tour</p>
                 </div>
               </div>
@@ -187,15 +189,15 @@ export default function Home() {
         <Section title="Our Impact" bgColor="lavender">
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <h3 className="text-5xl md:text-6xl font-playfair font-bold text-primary mb-2">1000+</h3>
+              <h3 className="text-5xl md:text-6xl font-playfair font-bold text-primary mb-2">100+</h3>
               <p className="text-gray-600 font-medium">Happy Travelers</p>
             </div>
             <div>
-              <h3 className="text-5xl md:text-6xl font-playfair font-bold text-primary mb-2">50+</h3>
+              <h3 className="text-5xl md:text-6xl font-playfair font-bold text-primary mb-2">10+</h3>
               <p className="text-gray-600 font-medium">Destinations</p>
             </div>
             <div>
-              <h3 className="text-5xl md:text-6xl font-playfair font-bold text-primary mb-2">10+</h3>
+              <h3 className="text-5xl md:text-6xl font-playfair font-bold text-primary mb-2">5+</h3>
               <p className="text-gray-600 font-medium">Years Experience</p>
             </div>
             <div>
