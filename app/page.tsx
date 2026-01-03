@@ -169,6 +169,7 @@ Strongly recommended for event management as well as tours or holidays, I am sur
             <Card className="border-l-4 border-primary" hover={false}>
               <p className="text-gray-700 text-lg mb-4 italic">
                 "We booked Kashmir trip through Swanubhav tours. It was an amazing experience for all of us. Excellent trip managed by the team. Seamless coordination between hotels and transportation arrangements at all destinations. Very professional approach.
+              </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 gradient-primary rounded-full flex items-center justify-center mr-4">
                   <span className="text-white font-semibold">JD</span>

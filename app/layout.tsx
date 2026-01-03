@@ -55,7 +55,7 @@ export default function RootLayout({
               </div>
             </div>
             <div className="border-t border-gray-200 pt-8 text-center">
-              <p className="text-gray-600 text-sm">© 2024 Swanubhav. All rights reserved.</p>
+              <p className="text-gray-600 text-sm">© {new Date().getFullYear()} Swanubhav. All rights reserved.</p>
             </div>
           </div>
         </footer>
