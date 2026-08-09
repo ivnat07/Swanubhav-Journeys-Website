@@ -49,8 +49,8 @@ export default function RootLayout({
               <div>
                 <h4 className="font-semibold text-gray-900 mb-4">Contact</h4>
                 <ul className="space-y-2 text-sm text-gray-600">
-                  <li>swanubhavjourneys@gmail.com</li>
-                  <li>+91 9503233819</li>
+                  <li><Link href="mailto:swanubhavjourneys@gmail.com" className="hover:text-primary transition-smooth cursor-pointer">swanubhavjourneys@gmail.com</Link></li>
+                  <li><Link href="tel:+919503233819" className="hover:text-primary transition-smooth cursor-pointer">+91 9503233819</Link></li>
                 </ul>
               </div>
             </div>
