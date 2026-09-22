@@ -315,8 +315,8 @@ export default function Contact() {
                 <h2 className="text-2xl font-playfair font-bold mb-6 text-gray-900">Location</h2>
                 <div className="space-y-4 text-gray-600">
                   <p className="leading-relaxed">
-                    Pradya Tej Apartments<br />
-                    Kothrud, Pune 411038
+                    Natu wada, opposite Lal Mahal<br />
+                    Shivaji Road,Pune 411002
                   </p>
                 </div>
               </Card>
