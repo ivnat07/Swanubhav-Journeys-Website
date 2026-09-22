@@ -52,14 +52,13 @@ export default function Services() {
                       {service.description}
                     </p>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+                  <div className="flex items-center text-sm text-gray-500 pt-4 border-t border-gray-100">
                     <span className="flex items-center">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       {service.duration}
                     </span>
-                    <span className="font-semibold text-primary">{service.priceRange}</span>
                   </div>
                 </Card>
               ))}
